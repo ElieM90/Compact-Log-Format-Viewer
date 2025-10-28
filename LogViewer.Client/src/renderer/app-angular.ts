@@ -25,6 +25,13 @@ logViewerApp.controller("LogViewerController", ["$scope", "logViewerResource", f
 
     vm.fileHasUpdates = false;
 
+    // FTP dialog state
+    vm.showFtpSelectorDialog = false;
+    vm.showFtpConnectionDialog = false;
+    vm.showFtpBrowserDialog = false;
+    vm.ftpConnection = null;
+    vm.editingConnection = null;
+
     // SignalR connection
     // To be notified from the FileSystemWatcher changes
     const connection = new signalR.HubConnectionBuilder()
@@ -95,6 +102,61 @@ logViewerApp.controller("LogViewerController", ["$scope", "logViewerResource", f
         ipcRenderer.send("logviewer.open-file-dialog");
     };
 
+    // FTP methods
+    vm.openFtpClick = () => {
+        vm.showFtpSelectorDialog = true;
+        $scope.$applyAsync();
+    };
+
+    vm.onFtpSelectorConnect = (connection) => {
+        vm.ftpConnection = connection;
+        vm.showFtpSelectorDialog = false;
+        vm.showFtpBrowserDialog = true;
+        $scope.$applyAsync();
+    };
+
+    vm.onFtpSelectorCreateNew = () => {
+        vm.editingConnection = null;
+        vm.showFtpSelectorDialog = false;
+        vm.showFtpConnectionDialog = true;
+        $scope.$applyAsync();
+    };
+
+    vm.onFtpSelectorCancel = () => {
+        vm.showFtpSelectorDialog = false;
+        $scope.$applyAsync();
+    };
+
+    vm.onFtpConnect = (connection) => {
+        vm.ftpConnection = connection;
+        vm.showFtpConnectionDialog = false;
+        vm.showFtpBrowserDialog = true;
+        $scope.$applyAsync();
+    };
+
+    vm.onFtpConnectionCancel = () => {
+        vm.showFtpConnectionDialog = false;
+        vm.editingConnection = null;
+        // Go back to selector if there are saved connections
+        vm.showFtpSelectorDialog = true;
+        $scope.$applyAsync();
+    };
+
+    vm.onFtpBrowserCancel = () => {
+        vm.showFtpBrowserDialog = false;
+        vm.ftpConnection = null;
+        $scope.$applyAsync();
+    };
+
+    vm.onFtpOpenFile = (file, connection) => {
+        vm.showFtpBrowserDialog = false;
+        // Send IPC to main process to download and open the file
+        ipcRenderer.send("logviewer.ftp.open-file", {
+            file: file,
+            connection: connection
+        });
+    };
+
     // Listen for events from RENDERER & update our VM
     // Which will flow down into our components
     ipcRenderer.on("logviewer.loading", (event:Electron.IpcRendererEvent, loading: boolean) => {
@@ -145,6 +207,11 @@ logViewerApp.controller("LogViewerController", ["$scope", "logViewerResource", f
         vm.logs = arg.logs;
         vm.messageTemplates = arg.messageTemplates;
         $scope.$applyAsync();
+    });
+
+    // Listen for FTP menu click
+    ipcRenderer.on("logviewer.open-ftp-dialog", () => {
+        vm.openFtpClick();
     });
 
 }]);

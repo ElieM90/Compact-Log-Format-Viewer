@@ -23,6 +23,15 @@ const template: Electron.MenuItemConstructorOptions[] = [
         },
       },
       {
+          id: "logviewer.open-ftp",
+          label: "Open from FTP...",
+          accelerator: "CmdOrCtrl+Shift+O",
+          click: (menuItem, focusedWindow) => {
+            // Send IPC event to renderer to open FTP dialog
+            focusedWindow.webContents.send("logviewer.open-ftp-dialog");
+        },
+      },
+      {
         id: "logviewer.close",
         label: "Close Log",
         enabled: false,

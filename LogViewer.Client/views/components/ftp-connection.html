@@ -1,0 +1,62 @@
+<div class="modal" tabindex="-1" ng-show="show" style="display: block; background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ isEditMode ? 'Edit' : 'New' }} FTP Connection</h5>
+        <button type="button" class="btn-close" ng-click="cancel()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="ftpName" class="form-label">Connection Name</label>
+            <input type="text" class="form-control" id="ftpName" ng-model="connection.name" placeholder="Production Server" ng-disabled="isEditMode" required>
+            <div class="form-text">A friendly name to identify this connection</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="ftpHost" class="form-label">FTP Host</label>
+            <input type="text" class="form-control" id="ftpHost" ng-model="connection.host" placeholder="ftp.example.com" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="ftpPort" class="form-label">Port</label>
+            <input type="number" class="form-control" id="ftpPort" ng-model="connection.port" placeholder="21" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="ftpUsername" class="form-label">Username</label>
+            <input type="text" class="form-control" id="ftpUsername" ng-model="connection.username" placeholder="website|hsc\username" required>
+            <div class="form-text">Format: website|hsc\username</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="ftpPassword" class="form-label">Password</label>
+            <input type="password" class="form-control" id="ftpPassword" ng-model="connection.password" required>
+          </div>
+
+          <div class="mb-3 form-check" ng-hide="isEditMode">
+            <input type="checkbox" class="form-check-input" id="saveConnection" ng-model="connection.saveConnection">
+            <label class="form-check-label" for="saveConnection">
+              Save connection (password will be encrypted)
+            </label>
+          </div>
+
+          <div class="alert alert-danger" ng-show="connectionError">
+            {{ connectionError }}
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" ng-click="testConnection()" ng-disabled="connecting">
+          <span ng-show="connecting">Testing...</span>
+          <span ng-hide="connecting">Test Connection</span>
+        </button>
+        <button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button>
+        <button type="button" class="btn btn-primary" ng-click="connect()" ng-disabled="connecting">
+          <span ng-show="connecting">Connecting...</span>
+          <span ng-hide="connecting">Connect</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

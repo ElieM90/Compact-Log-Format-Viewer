@@ -18,7 +18,17 @@
       <!-- No Log File is Open (Empty State) -->
       <drop-zone id="empty-state" ng-hide="vm.isLoading || vm.fileOpen">
           <button type="button" id="open-file" class="btn btn-primary" ng-click="vm.openFileClick()">Select or Drop a Log file</button>
+          <button type="button" id="open-ftp" class="btn btn-secondary ms-2" ng-click="vm.openFtpClick()">Open from FTP</button>
       </drop-zone>
+
+      <!-- FTP Selector Dialog -->
+      <ftp-selector show="vm.showFtpSelectorDialog" on-connect="vm.onFtpSelectorConnect(connection)" on-create-new="vm.onFtpSelectorCreateNew()" on-cancel="vm.onFtpSelectorCancel()"></ftp-selector>
+
+      <!-- FTP Connection Dialog -->
+      <ftp-connection show="vm.showFtpConnectionDialog" existing-connection="vm.editingConnection" on-connect="vm.onFtpConnect(connection)" on-cancel="vm.onFtpConnectionCancel()"></ftp-connection>
+
+      <!-- FTP Browser Dialog -->
+      <ftp-browser show="vm.showFtpBrowserDialog" connection="vm.ftpConnection" on-open-file="vm.onFtpOpenFile(file, connection)" on-cancel="vm.onFtpBrowserCancel()"></ftp-browser>
 
       <!-- Loader SVG animation -->
       <loader id="loader" ng-show="vm.isLoading"></loader>
@@ -83,6 +93,9 @@
       require('../dist/renderer/components/logitems.js');
       require('../dist/renderer/components/logsearch.js');
       require('../dist/renderer/components/pagination.js');
+      require('../dist/renderer/components/ftpselector.js');
+      require('../dist/renderer/components/ftpconnection.js');
+      require('../dist/renderer/components/ftpbrowser.js');
     </script>
 
   </body>
